@@ -6,8 +6,10 @@ if [ -z ${CLEANUP_AFTER+x} ]; then CLEANUP_AFTER=true; fi
 if [ -z ${SLEEPTIME_BEFORE+x} ]; then SLEEPTIME_BEFORE=0; fi
 if [ -z ${SLEEPTIME_AFTER+x} ]; then SLEEPTIME_AFTER=3600; fi
 
-echo "Sleeping..."
-sleep $SLEEPTIME_BEFORE
+if [ $SLEEPTIME_BEFORE -gt 0 ]; then
+  echo "Sleeping..."
+  sleep $SLEEPTIME_BEFORE
+fi
 
 if [ -z ${GNUPG_KEY_FILE+x} ]; then
   unset GNUPG_KEY_ID
@@ -56,7 +58,11 @@ if [ $CLEANUP_BEFORE ]; then
   find /backup/ -type f -delete
 else
 
-echo "Sleeping..."
-sleep $SLEEPTIME_AFTER
+if [ $SLEEPTIME_AFTER -gt 0 ]; then
+  echo "Sleeping..."
+  sleep $SLEEPTIME_AFTER
+fi
+
+echo "Exiting..."
 
 exit 0
