@@ -85,4 +85,9 @@ These IAM policies are required to allow read and write of backups:
   ]
 }
 ```
-I would recommend to restrict the IAM policies and use S3 Versioning and Lifecycle rules. The file are stored with a prefix based an the locale's abbreviated weekday name (e.g. Sun, Mon, Thu, ... ). Files uploaded on Sunday are stored using the STANDARD_IA storage class. This class is cheaper but you will always pay a whole month. Uploads on all other weekdays are stored using the STANDARD class. The idea is to have 7 Lifecycle rules based on the Prefix. The Lifecycle rule for Sunday objects should store them for at least a month and the Lifecycle rule on other weekdays should store them only one week. This should be the most cost effective storage solution.
+I recommend these locked down IAM policies and useage of S3 Versioning and Lifecycle rules. The files are stored with a prefix based an the locale's abbreviated weekday name (e.g. Sun, Mon, Thu, ... ). Files uploaded on Sunday are stored using the STANDARD_IA storage class. This class is cheaper but you will always pay a whole month. Uploads on all other weekdays are stored using the STANDARD class. The idea is to have 7 Lifecycle rules based on the Prefix. The Lifecycle rule for Sunday objects should store them for at least a month and the Lifecycle rule on other weekdays should store them only one week. This should be the most cost effective storage solution.
+
+This is my calculation for 1 GB of backup files with 1 month rentention:
+* 6GB S3 Standard Storage => 0.18$ (Prefix Mon - Sat) one revsion
+* 4GB S3 Infrequent Access Storage => 0.05$ (Sun) four revisions
+* Total 0.23$
