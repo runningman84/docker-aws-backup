@@ -25,7 +25,7 @@ mkdir -p /backup
 if [ $CLEANUP_BEFORE ]; then
   echo "Cleaning up old backup files"
   find /backup/ -type f -delete
-else
+fi
 
 cd /data
 
@@ -53,10 +53,12 @@ echo "Syncing files to S3 Bucket $AWS_BACKUP_BUCKET"
 
 aws s3 sync . s3://$AWS_BACKUP_BUCKET
 
+echo "Syncing finished"
+
 if [ $CLEANUP_BEFORE ]; then
   echo "Cleaning up new backup files"
   find /backup/ -type f -delete
-else
+fi
 
 if [ $SLEEPTIME_AFTER -gt 0 ]; then
   echo "Sleeping..."
