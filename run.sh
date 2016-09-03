@@ -6,9 +6,11 @@ if [ -z ${CLEANUP_AFTER+x} ]; then CLEANUP_AFTER=true; fi
 if [ -z ${SLEEPTIME_BEFORE+x} ]; then SLEEPTIME_BEFORE=0; fi
 if [ -z ${SLEEPTIME_AFTER+x} ]; then SLEEPTIME_AFTER=3600; fi
 
-if [ $SLEEPTIME_BEFORE -gt 0 ]; then
-  echo "Sleeping..."
-  sleep $SLEEPTIME_BEFORE
+if [ -z ${S3_STORAGE_CLASS+x} ]; then S3_STORAGE_CLASS=STANDARD_IA; fi
+if [ -z ${S3_SSE+x} ]; then S3_SSE=AES256; fi
+if [ -z ${S3_BUCKET+x} ]; then
+  echo "Please define S3_BUCKET as backup target"
+  exit 1
 fi
 
 if [ -z ${GNUPG_KEY_FILE+x} ]; then
@@ -18,6 +20,11 @@ else
   echo "Importing gnupg public key file"
   gpg --import $GNUPG_KEY_FILE
   gpg --list-keys --with-fingerprint
+fi
+
+if [ $SLEEPTIME_BEFORE -gt 0 ]; then
+  echo "Sleeping..."
+  sleep $SLEEPTIME_BEFORE
 fi
 
 mkdir -p /backup
@@ -49,9 +56,9 @@ done
 
 cd /backup
 
-echo "Syncing files to S3 Bucket $AWS_BACKUP_BUCKET"
+echo "Syncing files to S3 Bucket $S3_BUCKET with class $S3_STORAGE_CLASS"
 
-aws s3 sync . s3://$AWS_BACKUP_BUCKET
+aws s3 sync . s3://$S3_BUCKET --storage-class $S3_STORAGE_CLASS --sse $S3_SSE
 
 echo "Syncing finished"
 
