@@ -14,7 +14,7 @@ fi
 S3_PREFIX=`date +%a`
 
 # Mo
-if [ $S3_PREFIX eq 'Sun' ]; then
+if [ $S3_PREFIX = 'Sun' ]; then
   # use STANDARD IA class only on Sunday because we keep them longer anyway
   S3_STORAGE_CLASS="STANDARD_IA"
 else
